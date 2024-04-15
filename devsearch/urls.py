@@ -11,3 +11,4 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #goto settings, grab the url and connect to media root
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) #url path from static url to static root
