@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'projects.apps.ProjectsConfig', #created a new app prjects folder
+    'users.apps.UsersConfig',
+    
 ]
 
 MIDDLEWARE = [
