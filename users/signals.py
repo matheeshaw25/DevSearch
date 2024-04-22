@@ -21,6 +21,17 @@ def createProfile(sender,instance,created,**kwargs): #sender is model that is go
             name=user.first_name,
         )
  
+def updateUser(sender, instance, created, **kwargs):
+    profile = instance
+    user = profile.user
+    
+    if created == False: # we do not want this to be the first instance of the profile so thats why created should be equal to false
+        user.first_name = profile.name
+        user.username = profile.username
+        user.email = profile.email
+        user.save()
+
+
 
 #delete profile signal -> delete user too
 def deleteUser(sender, instance, **kwargs): # delete user
@@ -29,5 +40,6 @@ def deleteUser(sender, instance, **kwargs): # delete user
     print('Deleting user...')
 
 
-post_save.connect(createProfile, sender=User)    
+post_save.connect(createProfile, sender=User)   
+post_save.connect(updateUser, sender=Profile) # profile will send it
 post_delete.connect(deleteUser, sender=Profile) 
