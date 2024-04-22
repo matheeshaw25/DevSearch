@@ -17,13 +17,16 @@ def project(request,pk):
 
 @login_required(login_url="login") #decorator to prevent this  page access without authentication
 def createProject(request):
+    profile = request.user.profile
     form = ProjectForm() # create an instance of ProjectForm()
 
     if request.method == 'POST':
         print(request.POST)
         form = ProjectForm(request.POST,request.FILES) # reuqest.FILES process image in backend                                                                                        
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False) # give us an instance of the current project
+            project.owner = profile #one to many relationship
+            project.save()
             return redirect('projects')
 
     context={'form':form}
@@ -31,7 +34,8 @@ def createProject(request):
 
 @login_required(login_url="login")
 def updateProject(request,pk):
-    project = Project.objects.get(id=pk) # get the project where ID = Pk
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk) # only querying the specific users projects | get the project where ID = Pk
     form = ProjectForm(instance=project) # create an instance of ProjectForm() and pass in the project ID
 
     if request.method == 'POST':
@@ -46,7 +50,8 @@ def updateProject(request,pk):
 
 @login_required(login_url="login")
 def deleteProject(request,pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk)
     if request.method == 'POST':
         project.delete()
         return redirect('projects')
