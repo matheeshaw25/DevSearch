@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Skill
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -30,3 +30,17 @@ class ProfileForm(ModelForm):
 
             for name,field in self.fields.items():
                  field.widget.attrs.update({'class':'input'}) #setting an input class in the form  
+
+
+class SkillForm(ModelForm): #create skill form
+     class Meta:
+          model = Skill #model your working with
+          fields= '__all__' # show all the fields
+          exclude = ['owner'] # except owner
+
+         # styling textboxes as in CSS
+     def __init__(self,*args,**kwargs):
+            super(SkillForm,self).__init__(*args,**kwargs)
+
+            for name,field in self.fields.items():
+                 field.widget.attrs.update({'class':'input'}) #setting an input class in the form      
