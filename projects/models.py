@@ -19,6 +19,9 @@ class Project(models.Model):
 
     def __str__(self): #converts an object method to a string   
         return self.title
+    
+    class Meta:
+        ordering = ['created']
         
 
 class Review(models.Model):
