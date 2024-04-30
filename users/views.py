@@ -19,7 +19,7 @@ def loginUser(request):
 
 
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
 
         try:
@@ -31,7 +31,7 @@ def loginUser(request):
 
         if user is not None:
             login(request, user) # login function creates a session for the user in the DB and gets that session and adds it to browser cookies
-            return redirect('profiles')
+            return redirect(request.GET['next']if 'next' in request.GET else 'account')
         else:
             messages.error(request,'Username OR Password is incorrect')
 
