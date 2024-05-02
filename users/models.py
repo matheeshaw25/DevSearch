@@ -38,3 +38,20 @@ class Skill(models.Model):
     def __str__(self): #converts an object method to a string   
         return str(self.name)
     
+
+class Message(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True) # one profile can have many messages , on_delete was kept null to no delete messages from receipent when sender account gets deleted
+    recipient = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name="messages") #related_name = messages is used to denote that profile model is connected to recipient by messages | if we didnt use that it wont let profile model to get added twice becuz sender also added
+    name = models.CharField(max_length=200, null=True , blank=True)
+    email = models.EmailField(max_length=200, null=True , blank=True)
+    subject = models.CharField(max_length=200, null=True , blank=True)
+    body = models.TextField()
+    is_read = models.BooleanField(default=False, null=True) #read or undread
+    created = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+    def __str__(self): #converts an object method to a string   
+        return self.subject
+    
+    class Meta:
+        ordering = ['is_read','-created'] # - created means newer created

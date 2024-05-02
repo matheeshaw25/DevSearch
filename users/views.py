@@ -149,7 +149,7 @@ def updateSkill(request, pk):
     context={'form':form}
     return render(request, 'users/skill_form.html',context)
 
-
+@login_required(login_url='login')
 def deleteSkill(request, pk):
     profile = request.user.profile
     skill = profile.skill_set.get(id=pk)
@@ -159,3 +159,9 @@ def deleteSkill(request, pk):
         return redirect('account')
     context = {'object':skill} # we named it as object because we take the input as object in the delete_template.html page
     return render(request, 'delete_template.html', context)
+
+# messages view
+@login_required(login_url='login')
+def inbox(request):
+    context ={}
+    return render(request, 'users/inbox.html',context)
