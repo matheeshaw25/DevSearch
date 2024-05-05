@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import conf
 from django.db.models import Q
-from .models import Profile , Skill
-from .forms import CustomUserCreationForm, ProfileForm ,  SkillForm
+from .models import Profile , Skill , Message
+from .forms import CustomUserCreationForm, ProfileForm ,  SkillForm , MessageForm
 from .utils import searchProfiles , paginateProfiles
 # Create your views here.
 
@@ -160,8 +160,52 @@ def deleteSkill(request, pk):
     context = {'object':skill} # we named it as object because we take the input as object in the delete_template.html page
     return render(request, 'delete_template.html', context)
 
-# messages view
+# messages page
 @login_required(login_url='login')
 def inbox(request):
-    context ={}
+    profile = request.user.profile # getting the currently logged in user
+    messageRequests = profile.messages.all() # we renamed messages in "recepient" so thats why we dont use message_set.all()
+    unreadCount = messageRequests.filter(is_read = False).count() #number of unread messages
+    context ={'messageRequests':messageRequests, 'unreadCount':unreadCount}
     return render(request, 'users/inbox.html',context)
+
+# read a message
+@login_required(login_url='login')
+def viewMessage(request,pk):
+    profile =  request.user.profile # getting the current user
+    message = profile.messages.get(id=pk) # message is the related_name in the model
+    # MESSAGE READ AND UNREAD updating on template
+    if message.is_read == False:  # if message is not read and
+        message.is_read = True # now if message is read
+        message.save() #save it as message was read
+    context = {'message':message}
+    return render(request, 'users/message.html', context)
+
+
+def createMessage(request,pk):
+    recipient = Profile.objects.get(id=pk)
+    form = MessageForm()
+
+    # checking if there is a sender or not
+    try:
+        sender = request.user.profile # if user logged in
+    except:
+        sender = None # if user not logged in
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)    
+            message.sender = sender #either logged in user or none will be returned
+            message.recipient = recipient
+
+            # manually capturing the name and email of a person who is not logged in
+            if sender:
+                message.name = sender.name
+                message.email = sender.email
+            message.save()
+            messages.success(request, 'Your message was successfully sent!')    
+            return redirect('user-profile', pk=recipient.id)
+
+    context = {'recipient':recipient,'form':form}
+    return render(request, 'users/message_form.html', context)

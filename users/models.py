@@ -40,7 +40,7 @@ class Skill(models.Model):
     
 
 class Message(models.Model):
-    sender = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True) # one profile can have many messages , on_delete was kept null to no delete messages from receipent when sender account gets deleted
+    sender = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True) # one profile can have many messages , on_delete was kept null to not delete messages from receipent when sender account gets deleted
     recipient = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name="messages") #related_name = messages is used to denote that profile model is connected to recipient by messages | if we didnt use that it wont let profile model to get added twice becuz sender also added
     name = models.CharField(max_length=200, null=True , blank=True)
     email = models.EmailField(max_length=200, null=True , blank=True)
