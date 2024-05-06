@@ -4,7 +4,10 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import Profile
 
-#CONNECTED USING READY() METHOD IN APPS.PY
+from django.core.mail import send_mail
+from django.conf import settings
+
+# signals CONNECTED USING READY() METHOD IN APPS.PY
 
 
 # Everytime a user is created, a user profile will be created automatically
@@ -20,6 +23,19 @@ def createProfile(sender,instance,created,**kwargs): #sender is model that is go
             email=user.email,
             name=user.first_name,
         )
+
+        # email functionality when user created
+        subject = 'Welcome to DevSearch'
+        message = 'We are glad you are here!'
+    
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [profile.email],
+            fail_silently=False,
+        )
+
  
 def updateUser(sender, instance, created, **kwargs):
     profile = instance
