@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/',include('projects.urls')), #go to projects folder --> go to urls.py file
     path('',include('users.urls')),
+    path('api/', include('api.urls')), # registering API urls in the main folder
 
     #1
     path('reset_password/',auth_views.PasswordResetView.as_view(template_name = "reset_password.html"),name="reset_password"), # render template and perform logic of sending email to the user
