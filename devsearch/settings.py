@@ -40,6 +40,9 @@ INSTALLED_APPS = [
 
     'projects.apps.ProjectsConfig', #created a new app prjects folder
     'users.apps.UsersConfig',
+
+    'rest_framework', # REST FRAMEWORK
+
     
 ]
 
@@ -124,6 +127,7 @@ EMAIL_PORT = 587 #we are using TLS port
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'YOUR EMAIL'
 EMAIL_HOST_PASSWORD = 'YOUR PASSWORD'
+
 
 
 # Static files (CSS, JavaScript, Images)
