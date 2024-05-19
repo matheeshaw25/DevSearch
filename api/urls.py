@@ -12,6 +12,7 @@ urlpatterns = [
     path('users/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # willl have a long life span , this comes everything the previous token expires
     
     path('', views.getRoutes),
-    path('projects/',views.getProjects), #many projects
-    path('projects/<str:pk>/',views.getProject), # single project
+    path('projects/',views.getProjects), # get all projects
+    path('projects/<str:pk>/',views.getProject), # get single project
+    path('projects/<str:pk>/vote/',views.projectVote), # project vote
 ]
