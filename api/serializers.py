@@ -31,7 +31,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = '__all__'
 
-    def get_reviews(self, obj): # we wrote this because Tags are not included in the Project model.(GOTO projects.py->models.py)
+    def get_reviews(self, obj): # we wrote this because Tags are not included in the Project model.(GOTO projects.py->models.py and see)
         reviews = obj.review_set.all()
         serializer = ReviewSerializer(reviews, many=True)
         return serializer.data
