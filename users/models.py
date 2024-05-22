@@ -27,6 +27,17 @@ class Profile(models.Model):
     def __str__(self): #converts an object method to a string   
         return str(self.username)
     
+    class Meta:
+        ordering = ['created']
+    
+    @property #you can access as an attribute because you used @property method
+    def imageURL(self):
+        try:
+            url = self. profile_image.url
+        except:
+            url=''
+        return url
+    
 
 class Skill(models.Model):
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)    

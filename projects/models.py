@@ -5,7 +5,7 @@ from users.models import Profile
 # Create your models here.
 
 class Project(models.Model):
-    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL) # one to many
+    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE) # on_delete == models.CASCADE so the projects get deleted when the owner gets deleted.
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank = True)
     featured_image = models.ImageField(null=True, blank=True, default="default.jpg") # profile picture and default image , also pip install pillow
@@ -23,6 +23,14 @@ class Project(models.Model):
     class Meta:
         ordering = ['-vote_ratio','-vote_total', 'title'] #high ratio and high total will be sorted first
 
+    @property #you can access as an attribute because you used @property method
+    def imageURL(self):
+        try:
+            url = self.featured_image.url
+        except:
+            url=''
+        return url
+    
     @property
     def reviewers(self): #people who have reviewed for a project
         queryset = self.review_set.all().values_list('owner__id', flat = True)

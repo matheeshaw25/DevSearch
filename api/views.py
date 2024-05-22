@@ -2,9 +2,9 @@ from rest_framework.decorators import api_view, permission_classes # something l
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from .serializers import ProjectSerializer # inmporting serializer
-from projects.models import Project, Review
+from projects.models import Project, Review, Tag
 
-from api import serializers
+# from api import serializers
 
 @api_view(['GET'])# using this decorator 
 def getRoutes(request): #gets all the routes of urls and returns in JSON format
@@ -53,3 +53,15 @@ def projectVote(request,pk):
 
     serializer = ProjectSerializer(project, many=False)#4 make a serializer , (project we are going to serialize, many=false because we are getting a single instance of a project)
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+def removeTag(request):
+    tagId = request.data['tag'] #get the tagId
+    projectId = request.data['project'] # get the projectId
+
+    project = Project.objects.get(id=projectId)
+    tag = Tag.objects.get(id=tagId)
+
+    project.tags.remove(tag) #remove this specific tag from the project
+
+    return Response('Tag was deleted!')

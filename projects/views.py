@@ -40,12 +40,17 @@ def createProject(request):
     form = ProjectForm() # create an instance of ProjectForm()
 
     if request.method == 'POST':
-        print(request.POST)
+        newtags = request.POST.get('newtags').replace(',', " ").split() #get the tag and split each individual word by the spaces
         form = ProjectForm(request.POST,request.FILES) # reuqest.FILES process image in backend                                                                                        
         if form.is_valid():
             project = form.save(commit=False) # give us an instance of the current project
             project.owner = profile #one to many relationship
             project.save()
+            #Adding tags
+            for tag in newtags: # loop through the news tags
+                tag, created = Tag.objects.get_or_create(name=tag) #create a tag if it doesnt already exist or if one exists qeury that value
+                project.tags.add(tag) # add new tag to tags model DB
+
             return redirect('account')
 
     context={'form':form}
@@ -58,13 +63,20 @@ def updateProject(request,pk):
     form = ProjectForm(instance=project) # create an instance of ProjectForm() and pass in the project ID
 
     if request.method == 'POST':
-        print(request.POST)
+        #Adding tags , getting DATA from html page
+        newtags = request.POST.get('newtags').replace(',', " ").split() #get the tag and split each individual word by the spaces
+
+        
         form = ProjectForm(request.POST,request.FILES, instance=project)
         if form.is_valid():
-            form.save()
+            project = form.save() # take the instance of the newly created project
+            for tag in newtags: # loop through the news tags
+                tag, created = Tag.objects.get_or_create(name=tag) #create a tag if it doesnt already exist or if one exists qeury that value
+                project.tags.add(tag) # add new tag to tags model DB
+
             return redirect('account')
 
-    context={'form':form}
+    context={'form':form,'project':project}
     return render(request, "projects/project_form.html" ,context)
 
 @login_required(login_url="login")

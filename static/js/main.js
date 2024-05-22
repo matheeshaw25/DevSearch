@@ -23,3 +23,28 @@ for(let i=0;pageLinks.length > i; i++){
 
 }
 
+
+
+let tags = document.getElementsByClassName('project-tag ') //query all the tags in the page
+
+    for(let i=0; tags.length > i; i++){
+        tags[i].addEventListener('click',(e)=>{ //on click
+            let tagId = e.target.dataset.tag //get tag ID
+            let projectId = e.target.dataset.project // get project ID
+
+            // console.log('TAG ID:', tagId )
+            // console.log('PROJECT ID:', projectId)
+
+            fetch('http://127.0.0.1:8000/api/remove-tag/',{
+                method: 'DELETE',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({'project':projectId, 'tag':tagId})
+            })
+            .then(response => response.json())
+            .then(data => {
+                e.target.remove()
+            })
+        })
+    }
